@@ -32,3 +32,26 @@ def test_get_all_courses_returns_sample_courses():
 
     assert len(courses) >= 3
     assert courses[0]["name"] == "B.Tech AIML"
+
+
+def test_missing_route_returns_json_when_requested():
+    from app import app
+
+    client = app.test_client()
+
+    response = client.get("/missing", headers={"Accept": "application/json"})
+
+    assert response.status_code == 404
+    assert response.is_json
+    assert response.get_json()["error"] == "The requested academic record could not be found."
+
+
+def test_json_format_parameter_is_case_insensitive():
+    from app import app
+
+    client = app.test_client()
+
+    response = client.get("/students?format=JSON")
+
+    assert response.status_code == 200
+    assert response.is_json

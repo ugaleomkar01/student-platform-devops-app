@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 
 def wants_json_response():
-    if request.args.get("format") == "json":
+    if request.args.get("format", "").lower() == "json":
         return True
 
     best_match = request.accept_mimetypes.best_match(["text/html", "application/json"])
@@ -203,11 +203,7 @@ def health():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template(
-        "404.html",
-        message="The requested academic record could not be found.",
-        active_page="",
-    ), 404
+    return not_found_response("The requested academic record could not be found.")
 
 
 if __name__ == "__main__":
